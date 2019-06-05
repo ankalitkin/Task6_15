@@ -9,7 +9,7 @@ import java.awt.*;
 
 
 public class MainForm {
-    public static final String FORM_TITLE = "Task 5_15 by @kalitkin_a_v";
+    public static final String FORM_TITLE = "Task 6_15 by @kalitkin_a_v";
     private JPanel rootPanel;
     private JPanel drawPanel;
     private JButton exitButton;
