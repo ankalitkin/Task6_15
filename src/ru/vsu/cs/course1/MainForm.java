@@ -6,10 +6,13 @@ import org.jfree.data.xy.DefaultXYDataset;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import ru.vsu.cs.course1.PerfTester;
 
 
 public class MainForm {
-    public static final String FORM_TITLE = "Task 6_15 by @kalitkin_a_v";
+    private static final String FORM_TITLE = "Task 6_15 by @kalitkin_a_v";
     private JPanel rootPanel;
     private JPanel drawPanel;
     private JButton exitButton;
@@ -17,6 +20,9 @@ public class MainForm {
     private JButton findButton;
     private JButton deleteButton;
     private JButton insertAndDeleteButton;
+    private DefaultXYDataset xy;
+    private JFreeChart chart;
+    private ChartPanel chartPanel;
 
     public static void main(String[] args) {
         FormUtils.prepare();
@@ -29,12 +35,20 @@ public class MainForm {
     }
 
     MainForm() {
-        DefaultXYDataset xy = new DefaultXYDataset();
-        double[][] doubles = {{0, 1, 4}, {0, 1, 2}};
-        xy.addSeries("График 1", doubles);
-        JFreeChart chart = ChartFactory.createXYLineChart("My chart", "Ось абсцисс", "Ось ординат", xy);
-        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel = new ChartPanel(null);
         drawPanel.setLayout(new GridLayout());
         drawPanel.add(chartPanel);
+        insertButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xy = new DefaultXYDataset();
+                int iterations = 1000;
+                int timesPerIteration = 1000;
+                double[][] doubles = PerfTester.millisXY(PerfTester.testDummy(iterations, timesPerIteration), timesPerIteration);
+                xy.addSeries("График 1", doubles);
+                chart = ChartFactory.createXYLineChart("Тест мпроизводительности", "Количество элементов", "Время, мс", xy);
+                chartPanel.setChart(chart);
+            }
+        });
     }
 }

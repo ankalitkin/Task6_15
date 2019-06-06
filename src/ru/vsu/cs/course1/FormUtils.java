@@ -1,6 +1,7 @@
 package ru.vsu.cs.course1;
 
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 //import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -86,8 +87,8 @@ public class FormUtils  {
     }
 
     private static double getScaleFactorInternal() {
-        return 1;
-        //return Math.round((new WindowsLookAndFeel().getDefaults().getFont("Label.font").getSize()) / 11.0 / 0.96 * 8) / 8.0;
+        //return 1;
+        return Math.round((new WindowsLookAndFeel().getDefaults().getFont("Label.font").getSize()) / 11.0 / 0.96 * 8) / 8.0;
     }
 
     public static double getScaleFactor() {
