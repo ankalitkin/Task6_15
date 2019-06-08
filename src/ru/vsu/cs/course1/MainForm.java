@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import ru.vsu.cs.course1.PerfTester;
 
 
 public class MainForm {
@@ -18,9 +17,11 @@ public class MainForm {
     private JButton exitButton;
     private JButton insertButton;
     private JButton findButton;
-    private JButton deleteButton;
     private JButton insertAndDeleteButton;
-    private DefaultXYDataset xy;
+    private JSpinner measurementsSpinner;
+    private JSpinner operationsSpinner;
+    private JSpinner keyLengthSpinner;
+    private JButton deleteButton;
     private JFreeChart chart;
     private ChartPanel chartPanel;
 
@@ -34,21 +35,54 @@ public class MainForm {
         FormUtils.processFormAfter(mainForm.rootPanel, frame, true);
     }
 
+    private int getMeasurementsNumber() {
+        return (int) measurementsSpinner.getValue();
+    }
+
+    private int getOperationsNumber() {
+        return (int) operationsSpinner.getValue();
+    }
+
+    private int getKeyLength() {
+        return (int) keyLengthSpinner.getValue();
+    }
+
+    private void displayChart(DefaultXYDataset xy, String title) {
+        chart = ChartFactory.createXYLineChart(String.format("Map performance comparison - %s", title), "Number of elements", "Time, ms", xy);
+        chartPanel.setChart(chart);
+    }
+
     MainForm() {
+        measurementsSpinner.setModel(new SpinnerNumberModel(100,  1, 10000, 1));
+        operationsSpinner.setModel(new SpinnerNumberModel(1000,  1, 10000, 1));
+        keyLengthSpinner.setModel(new SpinnerNumberModel(8,  1, 256, 1));
         chartPanel = new ChartPanel(null);
         drawPanel.setLayout(new GridLayout());
         drawPanel.add(chartPanel);
-        insertButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                xy = new DefaultXYDataset();
-                int iterations = 1000;
-                int timesPerIteration = 1000;
-                double[][] doubles = PerfTester.millisXY(PerfTester.testDummy(iterations, timesPerIteration), timesPerIteration);
-                xy.addSeries("График 1", doubles);
-                chart = ChartFactory.createXYLineChart("Тест мпроизводительности", "Количество элементов", "Время, мс", xy);
-                chartPanel.setChart(chart);
-            }
-        });
+        insertButton.addActionListener(e -> testInsert());
+        deleteButton.addActionListener(e -> testDelete());
+        findButton.addActionListener(e -> testFind());
+        insertAndDeleteButton.addActionListener(e -> testInsertAndDelete());
+        exitButton.addActionListener(e -> System.exit(0));
+    }
+
+    private void testInsert() {
+        DefaultXYDataset xy = PerfTester.testInsertPerformance(getMeasurementsNumber(), getOperationsNumber(), getKeyLength());
+        displayChart(xy, "Insert Operation");
+    }
+
+    private void testDelete() {
+        DefaultXYDataset xy = PerfTester.testDeletePerformance(getMeasurementsNumber(), getOperationsNumber(), getKeyLength());
+        displayChart(xy, "Delete Operation");
+    }
+
+    private void testInsertAndDelete() {
+        DefaultXYDataset xy = PerfTester.testInsertAndDeletePerformance(getMeasurementsNumber(), getOperationsNumber(), getKeyLength());
+        displayChart(xy, "Insert and Delete Operations");
+    }
+
+    private void testFind() {
+        DefaultXYDataset xy = PerfTester.testFindPerformance(getMeasurementsNumber(), getOperationsNumber(), getKeyLength());
+        displayChart(xy, "Find Operation");
     }
 }
