@@ -55,7 +55,7 @@ public class MainForm {
     MainForm() {
         measurementsSpinner.setModel(new SpinnerNumberModel(100,  1, 10000, 1));
         operationsSpinner.setModel(new SpinnerNumberModel(1000,  1, 10000, 1));
-        keyLengthSpinner.setModel(new SpinnerNumberModel(8,  1, 256, 1));
+        keyLengthSpinner.setModel(new SpinnerNumberModel(8,  1, 10000, 1));
         chartPanel = new ChartPanel(null);
         drawPanel.setLayout(new GridLayout());
         drawPanel.add(chartPanel);
