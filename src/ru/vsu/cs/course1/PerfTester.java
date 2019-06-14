@@ -6,6 +6,13 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 
 public class PerfTester {
+
+    public static final Operation PREPARE = (map, string) -> map.put(string, string);
+    public static final Operation[] INSERT = {(map, string) -> map.put(string, string)};
+    public static final Operation[] REMOVE = {(map, string) -> map.remove(string)};
+    public static final Operation[] FIND = {(map, string) -> map.get(string)};
+    public static final Operation[] INSERT_THEN_REMOVE = new Operation[]{(map, string) -> map.put(string, string), (map, string) -> map.remove(string)};
+
     private interface Operation {
         void process(Map<String, String> map, String string);
     }
@@ -56,21 +63,21 @@ public class PerfTester {
     }
 
     public static DefaultXYDataset testInsertPerformance(int iterations, int timesPerIteration, int keyLength) {
-        return testPerformanceMulti(iterations, timesPerIteration, keyLength, null, new Operation[]{(map, string) -> map.put(string, string)});
-    }
-
-    public static DefaultXYDataset testDeletePerformance(int iterations, int timesPerIteration, int keyLength) {
-        return testPerformanceMulti(iterations, timesPerIteration, keyLength, (map, string) -> map.put(string, string), new Operation[]{(map, string) -> map.remove(string)});
-    }
-
-    public static DefaultXYDataset testInsertAndDeletePerformance(int iterations, int timesPerIteration, int keyLength) {
-        return testPerformanceMulti(iterations, timesPerIteration, keyLength, null, new Operation[]{(map, string) -> map.put(string, string), (map, string) -> map.remove(string)});
+        return testPerformanceMulti(iterations, timesPerIteration, keyLength, null, INSERT);
     }
 
     public static DefaultXYDataset testFindPerformance(int iterations, int timesPerIteration, int keyLength) {
-        return testPerformanceMulti(iterations, timesPerIteration, keyLength, (map, string) -> map.put(string, string), new Operation[]{(map, string) -> map.get(string)});
+        return testPerformanceMulti(iterations, timesPerIteration, keyLength, PREPARE, FIND);
     }
 
+    public static DefaultXYDataset testDeletePerformance(int iterations, int timesPerIteration, int keyLength) {
+        return testPerformanceMulti(iterations, timesPerIteration, keyLength, PREPARE, REMOVE);
+    }
+
+    public static DefaultXYDataset testInsertAndDeletePerformance(int iterations, int timesPerIteration, int keyLength) {
+        return testPerformanceMulti(iterations, timesPerIteration, keyLength, null, INSERT_THEN_REMOVE);
+    }
+    
     public static String[] randomStringArray(int keyLength, int count) {
         byte[] bytes = new byte[keyLength];
         String[] res = new String[count];
