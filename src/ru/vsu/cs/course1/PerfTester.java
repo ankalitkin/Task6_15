@@ -1,6 +1,7 @@
 package ru.vsu.cs.course1;
 
 import org.jfree.data.xy.DefaultXYDataset;
+import ru.vsu.cs.hash.SimpleHashMap;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -56,8 +57,8 @@ public class PerfTester {
     }
 
     public static DefaultXYDataset testPerformanceMulti(int iterations, int timesPerIteration, int keyLength, Operation prepare, Operation[] operations) {
-        Map[] maps = {new TreeMap(), new HashMap(), new LinkedHashMap()};
-        String[] names = {"TreeMap", "HashMap", "LinkedHashMap"};
+        Map[] maps = {new TreeMap(), new HashMap(), new LinkedHashMap(), new SimpleHashMap(1024*8)};
+        String[] names = {"TreeMap", "HashMap", "LinkedHashMap", "SimpleHashMap"};
         String[] keys = getKeysArray(keyLength, iterations * timesPerIteration);
         return getPerformanceData(iterations, timesPerIteration, keys, prepare, operations, maps, names);
     }
